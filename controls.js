@@ -14,6 +14,16 @@ const Controls = {
             gearToggle: false,  // True/false (toggle landing gear)
             afterburner: false, // True/false (afterburner engaged)
             
+            // Weapon systems
+            fireGun: false,       // Cannon firing state
+            fireMissile: false,   // Missile firing state
+            fireRocket: false,    // Rocket firing state
+            weaponSelect: 0,      // 0=Gun, 1=Missile, 2=Rocket
+            missileCount: 6,      // Number of missiles available
+            rocketCount: 12,      // Number of rockets available
+            gunAmmo: 1200,        // Rounds of gun ammo
+            lastFired: 0,         // Time since last weapon fired (for cooldown)
+            
             // Button states
             keysPressed: {},
             
@@ -73,16 +83,53 @@ const Controls = {
                     controls.afterburner = !controls.afterburner;
                     console.log("Afterburner toggled:", controls.afterburner);
                     break;
+                case ' ':
+                    // Fire primary weapon (depends on selected weapon)
+                    controls.fireGun = controls.weaponSelect === 0;
+                    controls.fireMissile = controls.weaponSelect === 1;
+                    controls.fireRocket = controls.weaponSelect === 2;
+                    console.log("Firing weapon: ", 
+                        controls.weaponSelect === 0 ? "Gun" : 
+                        controls.weaponSelect === 1 ? "Missile" : "Rocket");
+                    break;
+                case '1':
+                    // Select gun
+                    controls.weaponSelect = 0;
+                    console.log("Selected weapon: Gun");
+                    break;
+                case '2':
+                    // Select missile
+                    controls.weaponSelect = 1;
+                    console.log("Selected weapon: Missile");
+                    break;
+                case '3':
+                    // Select rocket
+                    controls.weaponSelect = 2;
+                    console.log("Selected weapon: Rocket");
+                    break;
             }
         });
         
         document.addEventListener('keyup', function(e) {
             controls.keysPressed[e.key.toLowerCase()] = false;
+            
+            // Reset weapon firing states on key release
+            if (e.key === ' ') {
+                controls.fireGun = false;
+                controls.fireMissile = false;
+                controls.fireRocket = false;
+            }
         });
         
-        // Mouse look controls
+        // Mouse controls for weapons
         document.addEventListener('mousedown', function(e) {
-            if (e.button === 2) { // Right mouse button
+            if (e.button === 0) { // Left mouse button
+                // Fire primary weapon (depends on selected weapon)
+                controls.fireGun = controls.weaponSelect === 0;
+                controls.fireMissile = controls.weaponSelect === 1;
+                controls.fireRocket = controls.weaponSelect === 2;
+                e.preventDefault();
+            } else if (e.button === 2) { // Right mouse button
                 controls.mouseLook.active = true;
                 controls.mouseLook.lastX = e.clientX;
                 controls.mouseLook.lastY = e.clientY;
@@ -91,13 +138,32 @@ const Controls = {
         });
         
         document.addEventListener('mouseup', function(e) {
-            if (e.button === 2) { // Right mouse button
+            if (e.button === 0) { // Left mouse button
+                controls.fireGun = false;
+                controls.fireMissile = false;
+                controls.fireRocket = false;
+            } else if (e.button === 2) { // Right mouse button
                 controls.mouseLook.active = false;
                 // Reset view gradually
                 controls.mouseLook.x *= 0.9;
                 controls.mouseLook.y *= 0.9;
                 e.preventDefault();
             }
+        });
+        
+        // Handle mouse wheel for weapon selection
+        document.addEventListener('wheel', function(e) {
+            if (e.deltaY > 0) {
+                // Scroll down - next weapon
+                controls.weaponSelect = (controls.weaponSelect + 1) % 3;
+            } else if (e.deltaY < 0) {
+                // Scroll up - previous weapon
+                controls.weaponSelect = (controls.weaponSelect + 2) % 3;
+            }
+            console.log("Selected weapon: ", 
+                controls.weaponSelect === 0 ? "Gun" : 
+                controls.weaponSelect === 1 ? "Missile" : "Rocket");
+            e.preventDefault();
         });
         
         document.addEventListener('mousemove', function(e) {
@@ -150,6 +216,12 @@ const Controls = {
             controls.throttle -= controls.sensitivity.throttle;
         }
         
+        // Update weapon firing cooldowns and ammo
+        if (controls.lastFired > 0) {
+            controls.lastFired -= deltaTime;
+            if (controls.lastFired < 0) controls.lastFired = 0;
+        }
+        
         // Apply control limits and damping
         controls.pitch = Math.max(-1, Math.min(1, controls.pitch));
         controls.roll = Math.max(-1, Math.min(1, controls.roll));
@@ -174,16 +246,38 @@ const Controls = {
         physics.gearDown = controls.gearToggle;
         physics.afterburner = controls.afterburner;
         
+        // Apply weapon states
+        physics.fireGun = controls.fireGun;
+        physics.fireMissile = controls.fireMissile;
+        physics.fireRocket = controls.fireRocket;
+        physics.weaponSelect = controls.weaponSelect;
+        physics.missileCount = controls.missileCount;
+        physics.rocketCount = controls.rocketCount;
+        physics.gunAmmo = controls.gunAmmo;
+        physics.lastFired = controls.lastFired;
+        
         // Apply brakes (only effective when on ground)
         if (controls.brakes > 0 && physics.altitude < 1) {
             physics.velocity.multiplyScalar(0.95);
         }
         
         return physics;
+    },
+    
+    // Get weapon status for display
+    getWeaponStatus: function(controls) {
+        return {
+            currentWeapon: controls.weaponSelect === 0 ? "GUN" : 
+                          controls.weaponSelect === 1 ? "MISSILE" : "ROCKET",
+            gunAmmo: controls.gunAmmo,
+            missileCount: controls.missileCount,
+            rocketCount: controls.rocketCount,
+            isFiring: controls.fireGun || controls.fireMissile || controls.fireRocket
+        };
     }
 };
 
 // Export the Controls object
 if (typeof module !== 'undefined') {
     module.exports = Controls;
-} 
+}
