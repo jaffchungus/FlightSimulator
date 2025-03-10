@@ -1,0 +1,171 @@
+body { 
+    margin: 0; 
+    overflow: hidden; 
+    background-color: #87CEEB; 
+    font-family: 'Arial', sans-serif;
+}
+
+canvas { 
+    display: block; 
+}
+
+#loading { 
+    position: absolute; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    color: white; 
+    font-family: Arial; 
+    font-size: 24px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    z-index: 100;
+}
+
+#hud { 
+    position: absolute; 
+    top: 20px; 
+    left: 20px; 
+    color: #00ff00; 
+    font-family: 'Courier New', monospace; 
+    background: rgba(0,0,0,0.5); 
+    padding: 10px; 
+    border-radius: 5px; 
+    z-index: 10;
+    border: 1px solid #00ff00;
+    text-shadow: 0 0 5px #00ff00;
+}
+
+#flight-info {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: #00ff00;
+    font-family: 'Courier New', monospace;
+    background: rgba(0,0,0,0.5);
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 10;
+    border: 1px solid #00ff00;
+    text-shadow: 0 0 5px #00ff00;
+}
+
+#controls { 
+    position: absolute; 
+    bottom: 20px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    color: white; 
+    background: rgba(0,0,0,0.5); 
+    padding: 10px; 
+    border-radius: 5px; 
+    font-family: Arial; 
+    z-index: 10;
+}
+
+#crash-message { 
+    position: absolute; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    color: red; 
+    font-size: 36px; 
+    font-weight: bold; 
+    display: none; 
+    text-shadow: 2px 2px 4px #000; 
+    z-index: 20;
+}
+
+#cockpit-view {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 40px solid rgba(0,0,0,0.5);
+    box-sizing: border-box;
+    pointer-events: none;
+    z-index: 5;
+    background: radial-gradient(ellipse at center, rgba(120,200,255,0) 95%, rgba(120,200,255,0.2) 100%);
+}
+
+#flight-instruments {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(0,0,0,0.6);
+    border-radius: 5px;
+    padding: 10px;
+    z-index: 10;
+    display: flex;
+    gap: 15px;
+}
+
+.instrument {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.8);
+    border: 2px solid #444;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.instrument-label {
+    position: absolute;
+    bottom: -20px;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 12px;
+}
+
+.needle {
+    position: absolute;
+    height: 50px;
+    width: 4px;
+    background: red;
+    top: 50%;
+    left: 50%;
+    transform-origin: center bottom;
+}
+
+#weather-alert {
+    position: absolute;
+    top: 120px;
+    left: 20px;
+    background: rgba(255,0,0,0.6);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: Arial;
+    display: none;
+    z-index: 15;
+}
+
+#autopilot-status {
+    position: absolute;
+    top: 70px;
+    left: 20px;
+    color: #00ff00;
+    font-family: 'Courier New', monospace;
+    background: rgba(0,0,0,0.5);
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 10;
+    display: none;
+}
+
+#error { 
+    position: absolute; 
+    bottom: 10px; 
+    right: 10px; 
+    color: red; 
+    font-family: monospace; 
+    background: rgba(0,0,0,0.7); 
+    padding: 5px; 
+    display: none; 
+    max-width: 80%; 
+    z-index: 100;
+} 
