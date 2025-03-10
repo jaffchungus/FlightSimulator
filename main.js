@@ -39,7 +39,7 @@ function init() {
         
         // Check WebGL support
         if (!checkWebGL()) {
-            document.getElementById('loading').innerHTML = 'WebGL not supported by your browser.<br>Please try a modern browser like Chrome, Firefox, or Edge.';
+            document.getElementById('loading').innerHTML = 'THE BEST FLIGHT SIMULATOR OUT THERE not supported by your browser.<br>Please try a modern browser like Chrome, Firefox, or Edge.';
             return;
         }
         
@@ -75,7 +75,7 @@ function init() {
         setupInstruments();
         
         // Start spawning enemy aircraft after a delay
-        setTimeout(spawnEnemyAircraft, 30000); // Start spawning enemies 30 seconds after start
+        setTimeout(spawnEnemyAircraft, 20000); // Start spawning enemies 20 seconds after start
         
         // Hide loading message
         document.getElementById('loading').style.display = 'none';
@@ -1324,9 +1324,9 @@ function createEnemyAircraft() {
     // Enemy body - smaller than player aircraft
     const bodyGeometry = new THREE.CylinderGeometry(1, 0.8, 12, 16);
     const bodyMaterial = new THREE.MeshPhongMaterial({
-        color: 0x333333,  // Dark gray
+        color: 0x0000FF,  // Dark gray
         specular: 0x111111,
-        shininess: 30
+        shininess: 
     });
     
     const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
