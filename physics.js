@@ -291,4 +291,4 @@ const FlightPhysics = {
 // Export the FlightPhysics object
 if (typeof module !== 'undefined') {
     module.exports = FlightPhysics;
-} 
+}
