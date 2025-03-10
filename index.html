@@ -19,6 +19,20 @@
             max-width: 250px;
             transition: opacity 1s;
         }
+        
+        /* Weapons info styling */
+        #weapons-info {
+            position: fixed;
+            bottom: 70px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            color: #ff9900;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            z-index: 1000;
+        }
     </style>
 </head>
 <body>
@@ -29,6 +43,7 @@
     <div id="flight-instruments"></div>
     <div id="weather-alert"></div>
     <div id="controls">Controls: W/S or ↑/↓ - Pitch | A/D or ←/→ - Roll | Q/E - Yaw | Shift - Throttle Up | Ctrl - Throttle Down | G - Gear | X - Afterburner</div>
+    <div id="weapons-info">Weapon Controls: SPACE/Mouse - Fire | 1,2,3 - Select Weapon | Mouse Wheel - Cycle Weapons</div>
     <div id="crash-message">CRASHED! Restarting in 3...</div>
     <div id="error"></div>
     <div id="debug" style="position: fixed; bottom: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 10px; font-family: monospace; z-index: 1000;"></div>
@@ -68,7 +83,7 @@
                     console.error("Error initializing simulator:", error);
                     document.getElementById('error').style.display = 'block';
                     document.getElementById('error').textContent = 'Error initializing simulator: ' + error.message;
-                }
+                }a
             } else {
                 console.error("init function not found");
                 document.getElementById('error').style.display = 'block';
