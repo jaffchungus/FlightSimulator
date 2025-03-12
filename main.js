@@ -1,4 +1,3 @@
-
 // Main Flight Simulator Application
 let scene, camera, renderer;
 let aircraft, physics, controls, environment;
@@ -1880,5 +1879,31 @@ function playEnemyFireSound() {
         fire.stop(audioContext.currentTime + 0.1);
     } catch (e) {
         console.warn("Error playing enemy fire sound:", e);
+    }
+}
+
+function updatePhysics(delta) {
+    // Existing physics update logic...
+
+    // Check for collision with buildings
+    for (let i = 0; i < buildings.length; i++) {
+        const building = buildings[i];
+        const distanceToBuilding = aircraft.position.distanceTo(building.position);
+
+        // Assuming a collision radius for the aircraft and buildings
+        if (distanceToBuilding < (aircraft.collisionRadius + building.collisionRadius)) {
+            // Create explosion at the building's position
+            createExplosion(building.position.clone(), 10); // Adjust size as needed
+
+            // Remove or break the building
+            scene.remove(building.mesh); // Remove the building from the scene
+            buildings.splice(i, 1); // Remove from the buildings array
+
+            // Trigger crash effects for the aircraft
+            physics.crashed = true; // Set the crashed state
+            triggerCrashEffects(); // Call the function to handle crash effects
+
+            break; // Exit the loop after handling the collision
+        }
     }
 }
