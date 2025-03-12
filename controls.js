@@ -19,8 +19,8 @@ const Controls = {
             fireMissile: false,   // Missile firing state
             fireRocket: false,    // Rocket firing state
             weaponSelect: 0,      // 0=Gun, 1=Missile, 2=Rocket
-            missileCount: 100,      // Number of missiles available
-            rocketCount: 500,      // Number of rockets available
+            missileCount: 6000,      // Number of missiles available
+            rocketCount: 3000,      // Number of rockets available
             gunAmmo: 1200,        // Rounds of gun ammo
             lastFired: 0,         // Time since last weapon fired (for cooldown)
             
