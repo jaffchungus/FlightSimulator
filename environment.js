@@ -589,4 +589,4 @@ const Environment = {
 // Export the Environment object
 if (typeof module !== 'undefined') {
     module.exports = Environment;
-} 
+}
