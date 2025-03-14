@@ -699,7 +699,7 @@ function updateProjectiles(delta) {
 }
 
 // Create explosion at specified position
-function createExplosion(position, size = 10) {
+function createExplosion(position, size = 20) {
     // Make size at least 5
     size = Math.max(5, size);
     
