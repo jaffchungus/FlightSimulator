@@ -1,244 +1,371 @@
-// Streamlined Fighter Jet Model Creator
-const FighterJetModel = {
-    // Create a realistic fighter jet
-    createFighterJet: function(scene) {
-        const jetGroup = new THREE.Group();
+// Commercial Airplane Model Creator
+const PlaneModel = {
+    // Create a complete commercial airplane
+    createCommercialPlane: function(scene) {
+        const planeGroup = new THREE.Group();
         
-        // Add all jet components
-        this.createFuselage(jetGroup);
-        this.createWings(jetGroup);
-        this.createTail(jetGroup);
-        this.createEngines(jetGroup);
-        this.createCockpit(jetGroup);
-        this.createWeapons(jetGroup);
+        // Add all airplane components
+        this.createFuselage(planeGroup);
+        this.createWings(planeGroup);
+        this.createTail(planeGroup);
+        this.createEngines(planeGroup);
+        this.createWindows(planeGroup);
+        this.createLandingGear(planeGroup);
         
         // Set initial position
-        jetGroup.position.set(0, 20, 0);
-        scene.add(jetGroup);
+        planeGroup.position.set(0, 20, 0);
+        scene.add(planeGroup);
         
-        return jetGroup;
+        return planeGroup;
     },
     
-    // Create fighter jet fuselage (body)
-    createFuselage: function(jetGroup) {
-        // Main body
-        const bodyGeometry = new THREE.CylinderGeometry(3, 3, 40, 8);
-        const bodyMaterial = new THREE.MeshStandardMaterial({
-            color: 0x333333,
-            metalness: 0.7,
-            roughness: 0.2
+    // Create airplane fuselage (body)
+    createFuselage: function(planeGroup) {
+        // Main body cylinder
+        const fuselageGeometry = new THREE.CylinderGeometry(3, 3, 40, 32);
+        const fuselageMaterial = new THREE.MeshPhongMaterial({
+            color: 0xFFFFFF,
+            specular: 0x555555,
+            shininess: 30
         });
         
-        const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
-        body.rotation.x = -Math.PI / 2;
-        body.castShadow = true;
-        jetGroup.add(body);
+        const fuselage = new THREE.Mesh(fuselageGeometry, fuselageMaterial);
+        fuselage.rotation.z = Math.PI / 2;
+        fuselage.castShadow = true;
+        planeGroup.add(fuselage);
         
         // Nose cone
-        const noseGeometry = new THREE.ConeGeometry(3, 8, 8);
-        const nose = new THREE.Mesh(noseGeometry, bodyMaterial);
-        nose.position.set(20, 0, 0);
-        nose.rotation.x = -Math.PI / 2;
+        const noseGeometry = new THREE.ConeGeometry(3, 6, 32);
+        const nose = new THREE.Mesh(noseGeometry, fuselageMaterial);
+        nose.rotation.z = Math.PI / 2;
+        nose.position.set(23, 0, 0);
         nose.castShadow = true;
-        jetGroup.add(nose);
+        planeGroup.add(nose);
         
-        // Intake ducts
-        const intakeGeometry = new THREE.BoxGeometry(4, 2, 2);
-        const intakeMaterial = new THREE.MeshStandardMaterial({
-            color: 0x222222,
-            metalness: 0.8,
-            roughness: 0.1
-        });
-        
-        const leftIntake = new THREE.Mesh(intakeGeometry, intakeMaterial);
-        leftIntake.position.set(-10, 0, 2);
-        leftIntake.castShadow = true;
-        jetGroup.add(leftIntake);
-        
-        const rightIntake = new THREE.Mesh(intakeGeometry, intakeMaterial);
-        rightIntake.position.set(-10, 0, -2);
-        rightIntake.castShadow = true;
-        jetGroup.add(rightIntake);
+        // Tail cone
+        const tailConeGeometry = new THREE.ConeGeometry(3, 8, 32);
+        const tailCone = new THREE.Mesh(tailConeGeometry, fuselageMaterial);
+        tailCone.rotation.z = -Math.PI / 2;
+        tailCone.position.set(-23, 0, 0);
+        tailCone.castShadow = true;
+        planeGroup.add(tailCone);
     },
     
-    // Create delta wings
-    createWings: function(jetGroup) {
-        // Delta wing shape
+    // Create wings
+    createWings: function(planeGroup) {
+        // Create wing shape
         const wingShape = new THREE.Shape();
         wingShape.moveTo(0, 0);
-        wingShape.lineTo(15, -10);
-        wingShape.lineTo(20, -8);
-        wingShape.lineTo(20, 8);
-        wingShape.lineTo(15, 10);
+        wingShape.lineTo(15, -1);
+        wingShape.lineTo(18, -2);
+        wingShape.lineTo(18, -3);
+        wingShape.lineTo(0, -3);
         wingShape.lineTo(0, 0);
         
         const wingExtrudeSettings = {
-            steps: 10,
-            depth: 2,
-            bevelEnabled: false
+            steps: 1,
+            depth: 1.5,
+            bevelEnabled: true,
+            bevelThickness: 0.3,
+            bevelSize: 0.2,
+            bevelOffset: 0,
+            bevelSegments: 3
         };
         
         const wingGeometry = new THREE.ExtrudeGeometry(wingShape, wingExtrudeSettings);
-        const wingMaterial = new THREE.MeshStandardMaterial({
-            color: 0x333333,
-            metalness: 0.7,
-            roughness: 0.2
+        const wingMaterial = new THREE.MeshPhongMaterial({
+            color: 0xFFFFFF,
+            specular: 0x555555,
+            shininess: 30
         });
         
         // Left wing
         const leftWing = new THREE.Mesh(wingGeometry, wingMaterial);
-        leftWing.position.set(-15, 0, 0);
-        leftWing.rotation.x = -Math.PI / 2;
+        leftWing.position.set(-5, 0, 0);
         leftWing.castShadow = true;
-        jetGroup.add(leftWing);
+        planeGroup.add(leftWing);
         
-        // Right wing
+        // Right wing (mirror of left wing)
         const rightWing = new THREE.Mesh(wingGeometry, wingMaterial);
-        rightWing.position.set(-15, 0, 0);
-        rightWing.rotation.x = -Math.PI / 2;
+        rightWing.position.set(-5, 0, 0);
         rightWing.rotation.y = Math.PI;
         rightWing.castShadow = true;
-        jetGroup.add(rightWing);
+        planeGroup.add(rightWing);
     },
     
     // Create tail section
-    createTail: function(jetGroup) {
-        // Vertical stabilizer
-        const tailShape = new THREE.Shape();
-        tailShape.moveTo(0, 0);
-        tailShape.lineTo(-3, 0);
-        tailShape.lineTo(-5, 10);
-        tailShape.lineTo(-2, 12);
-        tailShape.lineTo(2, 12);
-        tailShape.lineTo(5, 10);
-        tailShape.lineTo(3, 0);
-        tailShape.lineTo(0, 0);
+    createTail: function(planeGroup) {
+        // Vertical stabilizer (tail fin)
+        const tailFinShape = new THREE.Shape();
+        tailFinShape.moveTo(0, 0);
+        tailFinShape.lineTo(-4, 0);
+        tailFinShape.lineTo(-6, 7);
+        tailFinShape.lineTo(-3, 7);
+        tailFinShape.lineTo(0, 0);
         
         const tailExtrudeSettings = {
-            steps: 10,
-            depth: 2,
-            bevelEnabled: false
+            steps: 1,
+            depth: 0.5,
+            bevelEnabled: true,
+            bevelThickness: 0.2,
+            bevelSize: 0.1,
+            bevelOffset: 0,
+            bevelSegments: 2
         };
         
-        const tailGeometry = new THREE.ExtrudeGeometry(tailShape, tailExtrudeSettings);
-        const tailMaterial = new THREE.MeshStandardMaterial({
-            color: 0x333333,
-            metalness: 0.7,
-            roughness: 0.2
+        const tailFinGeometry = new THREE.ExtrudeGeometry(tailFinShape, tailExtrudeSettings);
+        const tailMaterial = new THREE.MeshPhongMaterial({
+            color: 0xFFFFFF,
+            specular: 0x555555,
+            shininess: 30
         });
         
-        const tailFin = new THREE.Mesh(tailGeometry, tailMaterial);
-        tailFin.position.set(-30, 0, 0);
-        tailFin.rotation.x = -Math.PI / 2;
+        const tailFin = new THREE.Mesh(tailFinGeometry, tailMaterial);
+        tailFin.position.set(-20, 3, 0);
         tailFin.castShadow = true;
-        jetGroup.add(tailFin);
+        planeGroup.add(tailFin);
+        
+        // Horizontal stabilizers
+        const hStabShape = new THREE.Shape();
+        hStabShape.moveTo(0, 0);
+        hStabShape.lineTo(5, 0);
+        hStabShape.lineTo(7, -0.5);
+        hStabShape.lineTo(7, -1);
+        hStabShape.lineTo(0, -1);
+        hStabShape.lineTo(0, 0);
+        
+        const hStabGeometry = new THREE.ExtrudeGeometry(hStabShape, tailExtrudeSettings);
+        
+        // Left horizontal stabilizer
+        const leftHStab = new THREE.Mesh(hStabGeometry, tailMaterial);
+        leftHStab.position.set(-20, 2, 0.5);
+        leftHStab.castShadow = true;
+        planeGroup.add(leftHStab);
+        
+        // Right horizontal stabilizer
+        const rightHStab = new THREE.Mesh(hStabGeometry, tailMaterial);
+        rightHStab.position.set(-20, 2, -0.5);
+        rightHStab.rotation.y = Math.PI;
+        rightHStab.castShadow = true;
+        planeGroup.add(rightHStab);
     },
     
     // Create engines
-    createEngines: function(jetGroup) {
-        // Engine nacelle
-        const engineGeometry = new THREE.CylinderGeometry(2, 2, 8, 16);
-        const engineMaterial = new THREE.MeshStandardMaterial({
+    createEngines: function(planeGroup) {
+        const engineGeometry = new THREE.CylinderGeometry(1.5, 1.5, 5, 24);
+        const engineMaterial = new THREE.MeshPhongMaterial({
             color: 0x444444,
-            metalness: 0.7,
-            roughness: 0.1
+            specular: 0x888888,
+            shininess: 60
         });
         
-        // Exhaust
-        const exhaustGeometry = new THREE.CylinderGeometry(1.5, 2.2, 1, 16);
-        const exhaustMaterial = new THREE.MeshStandardMaterial({
-            color: 0x111111,
-            metalness: 0.9,
-            roughness: 0.05
+        // Intake geometry
+        const intakeGeometry = new THREE.CylinderGeometry(1.6, 1.4, 0.5, 24);
+        const intakeMaterial = new THREE.MeshPhongMaterial({
+            color: 0x333333,
+            specular: 0x888888,
+            shininess: 80
+        });
+        
+        // Exhaust geometry
+        const exhaustGeometry = new THREE.CylinderGeometry(1.4, 1.6, 0.5, 24);
+        const exhaustMaterial = new THREE.MeshPhongMaterial({
+            color: 0x222222,
+            specular: 0x888888,
+            shininess: 80
+        });
+        
+        // Engine mounts
+        const mountGeometry = new THREE.BoxGeometry(3, 0.5, 1);
+        const mountMaterial = new THREE.MeshPhongMaterial({
+            color: 0x444444,
+            specular: 0x888888,
+            shininess: 50
         });
         
         // Left engine
         const leftEngine = new THREE.Mesh(engineGeometry, engineMaterial);
-        leftEngine.position.set(-25, 0, 2);
-        leftEngine.rotation.x = -Math.PI / 2;
+        leftEngine.rotation.z = Math.PI / 2;
+        leftEngine.position.set(-3, -3, -8);
         leftEngine.castShadow = true;
-        jetGroup.add(leftEngine);
+        planeGroup.add(leftEngine);
+        
+        const leftIntake = new THREE.Mesh(intakeGeometry, intakeMaterial);
+        leftIntake.rotation.z = Math.PI / 2;
+        leftIntake.position.set(-0.5, -3, -8);
+        leftIntake.castShadow = true;
+        planeGroup.add(leftIntake);
         
         const leftExhaust = new THREE.Mesh(exhaustGeometry, exhaustMaterial);
-        leftExhaust.position.set(-30, 0, 2);
-        leftExhaust.rotation.x = -Math.PI / 2;
+        leftExhaust.rotation.z = Math.PI / 2;
+        leftExhaust.position.set(-5.5, -3, -8);
         leftExhaust.castShadow = true;
-        jetGroup.add(leftExhaust);
+        planeGroup.add(leftExhaust);
+        
+        const leftMount = new THREE.Mesh(mountGeometry, mountMaterial);
+        leftMount.position.set(-3, -1.5, -8);
+        leftMount.castShadow = true;
+        planeGroup.add(leftMount);
         
         // Right engine
         const rightEngine = new THREE.Mesh(engineGeometry, engineMaterial);
-        rightEngine.position.set(-25, 0, -2);
-        rightEngine.rotation.x = -Math.PI / 2;
+        rightEngine.rotation.z = Math.PI / 2;
+        rightEngine.position.set(-3, -3, 8);
         rightEngine.castShadow = true;
-        jetGroup.add(rightEngine);
+        planeGroup.add(rightEngine);
+        
+        const rightIntake = new THREE.Mesh(intakeGeometry, intakeMaterial);
+        rightIntake.rotation.z = Math.PI / 2;
+        rightIntake.position.set(-0.5, -3, 8);
+        rightIntake.castShadow = true;
+        planeGroup.add(rightIntake);
         
         const rightExhaust = new THREE.Mesh(exhaustGeometry, exhaustMaterial);
-        rightExhaust.position.set(-30, 0, -2);
-        rightExhaust.rotation.x = -Math.PI / 2;
+        rightExhaust.rotation.z = Math.PI / 2;
+        rightExhaust.position.set(-5.5, -3, 8);
         rightExhaust.castShadow = true;
-        jetGroup.add(rightExhaust);
+        planeGroup.add(rightExhaust);
+        
+        const rightMount = new THREE.Mesh(mountGeometry, mountMaterial);
+        rightMount.position.set(-3, -1.5, 8);
+        rightMount.castShadow = true;
+        planeGroup.add(rightMount);
     },
     
-    // Create cockpit
-    createCockpit: function(jetGroup) {
-        // Cockpit canopy
-        const canopyGeometry = new THREE.SphereGeometry(3, 16, 16, 0, Math.PI * 2, 0, Math.PI / 2);
-        const canopyMaterial = new THREE.MeshStandardMaterial({
-            color: 0x88ccff,
-            metalness: 0.2,
-            roughness: 0.1,
+    // Create windows
+    createWindows: function(planeGroup) {
+        const windowGeometry = new THREE.PlaneGeometry(0.7, 0.7);
+        const windowMaterial = new THREE.MeshPhongMaterial({
+            color: 0x88CCFF,
+            specular: 0xFFFFFF,
+            shininess: 100,
             transparent: true,
-            opacity: 0.7,
-            side: THREE.DoubleSide
+            opacity: 0.7
         });
         
-        const canopy = new THREE.Mesh(canopyGeometry, canopyMaterial);
-        canopy.position.set(15, 0, 0);
-        canopy.rotation.x = -Math.PI / 2;
-        canopy.rotation.z = Math.PI / 2;
-        canopy.castShadow = true;
-        jetGroup.add(canopy);
+        // Create passenger windows along fuselage
+        for (let i = -15; i < 15; i += 2) {
+            // Windows on the left side
+            const leftWindow = new THREE.Mesh(windowGeometry, windowMaterial);
+            leftWindow.position.set(i, 1, 3.01);  // Slightly outside radius
+            leftWindow.rotation.y = Math.PI / 2;
+            planeGroup.add(leftWindow);
+            
+            // Windows on the right side
+            const rightWindow = new THREE.Mesh(windowGeometry, windowMaterial);
+            rightWindow.position.set(i, 1, -3.01);  // Slightly outside radius
+            rightWindow.rotation.y = -Math.PI / 2;
+            planeGroup.add(rightWindow);
+        }
+        
+        // Cockpit windows
+        const cockpitGeometry = new THREE.SphereGeometry(2.8, 32, 32, 0, Math.PI * 2, 0, Math.PI / 2);
+        const cockpitMaterial = new THREE.MeshPhongMaterial({
+            color: 0x88CCFF,
+            specular: 0xFFFFFF,
+            shininess: 200,
+            transparent: true,
+            opacity: 0.7
+        });
+        
+        const cockpit = new THREE.Mesh(cockpitGeometry, cockpitMaterial);
+        cockpit.position.set(21, 1, 0);
+        cockpit.rotation.x = Math.PI / 2;
+        cockpit.rotation.y = Math.PI / 2;
+        planeGroup.add(cockpit);
     },
     
-    // Create weapons systems
-    createWeapons: function(jetGroup) {
-        // Missile
-        const missileGeometry = new THREE.CylinderGeometry(0.3, 0.3, 6, 16);
-        const missileMaterial = new THREE.MeshStandardMaterial({
-            color: 0xaaaaaa,
-            metalness: 0.8,
-            roughness: 0.1
+    // Create landing gear
+    createLandingGear: function(planeGroup) {
+        // Main strut geometry
+        const strutGeometry = new THREE.CylinderGeometry(0.2, 0.2, 3, 8);
+        const strutMaterial = new THREE.MeshPhongMaterial({
+            color: 0x777777,
+            specular: 0x999999,
+            shininess: 60
         });
         
-        // Left wing missiles
-        const leftMissile1 = new THREE.Mesh(missileGeometry, missileMaterial);
-        leftMissile1.position.set(-15, -1, 3);
-        leftMissile1.rotation.z = Math.PI / 2;
-        leftMissile1.castShadow = true;
-        jetGroup.add(leftMissile1);
+        // Wheel geometry
+        const wheelGeometry = new THREE.CylinderGeometry(0.8, 0.8, 0.5, 16);
+        const wheelMaterial = new THREE.MeshPhongMaterial({
+            color: 0x222222,
+            specular: 0x444444,
+            shininess: 30
+        });
         
-        const leftMissile2 = new THREE.Mesh(missileGeometry, missileMaterial);
-        leftMissile2.position.set(-15, -2, 3);
-        leftMissile2.rotation.z = Math.PI / 2;
-        leftMissile2.castShadow = true;
-        jetGroup.add(leftMissile2);
+        // Housing geometry
+        const housingGeometry = new THREE.BoxGeometry(1.5, 1, 1.5);
+        const housingMaterial = new THREE.MeshPhongMaterial({
+            color: 0x555555,
+            specular: 0x777777,
+            shininess: 40
+        });
         
-        // Right wing missiles
-        const rightMissile1 = new THREE.Mesh(missileGeometry, missileMaterial);
-        rightMissile1.position.set(-15, -1, -3);
-        rightMissile1.rotation.z = Math.PI / 2;
-        rightMissile1.castShadow = true;
-        jetGroup.add(rightMissile1);
+        // Front landing gear
+        const frontStrut = new THREE.Mesh(strutGeometry, strutMaterial);
+        frontStrut.position.set(15, -3, 0);
+        planeGroup.add(frontStrut);
         
-        const rightMissile2 = new THREE.Mesh(missileGeometry, missileMaterial);
-        rightMissile2.position.set(-15, -2, -3);
-        rightMissile2.rotation.z = Math.PI / 2;
-        rightMissile2.castShadow = true;
-        jetGroup.add(rightMissile2);
+        const frontWheel = new THREE.Mesh(wheelGeometry, wheelMaterial);
+        frontWheel.position.set(15, -4.5, 0);
+        frontWheel.rotation.x = Math.PI / 2;
+        planeGroup.add(frontWheel);
+        
+        const frontHousing = new THREE.Mesh(housingGeometry, housingMaterial);
+        frontHousing.position.set(15, -1.5, 0);
+        planeGroup.add(frontHousing);
+        
+        // Left main landing gear
+        const leftStrut = new THREE.Mesh(strutGeometry, strutMaterial);
+        leftStrut.position.set(-5, -3, -3);
+        planeGroup.add(leftStrut);
+        
+        const leftWheel = new THREE.Mesh(wheelGeometry, wheelMaterial);
+        leftWheel.position.set(-5, -4.5, -3);
+        leftWheel.rotation.x = Math.PI / 2;
+        planeGroup.add(leftWheel);
+        
+        const leftHousing = new THREE.Mesh(housingGeometry, housingMaterial);
+        leftHousing.position.set(-5, -1.5, -3);
+        planeGroup.add(leftHousing);
+        
+        // Right main landing gear
+        const rightStrut = new THREE.Mesh(strutGeometry, strutMaterial);
+        rightStrut.position.set(-5, -3, 3);
+        planeGroup.add(rightStrut);
+        
+        const rightWheel = new THREE.Mesh(wheelGeometry, wheelMaterial);
+        rightWheel.position.set(-5, -4.5, 3);
+        rightWheel.rotation.x = Math.PI / 2;
+        planeGroup.add(rightWheel);
+        
+        const rightHousing = new THREE.Mesh(housingGeometry, housingMaterial);
+        rightHousing.position.set(-5, -1.5, 3);
+        planeGroup.add(rightHousing);
+    },
+    
+    // Animation function for gear retraction
+    retractGear: function(planeGroup, isRetracted) {
+        // Find all landing gear components
+        planeGroup.traverse(function(child) {
+            if (child.name && child.name.includes('gear')) {
+                child.visible = !isRetracted;
+            }
+        });
+    },
+    
+    // Create wing flaps that can be animated
+    animateFlaps: function(planeGroup, flapAngle) {
+        // Find flap components and rotate them
+        planeGroup.traverse(function(child) {
+            if (child.name && child.name.includes('flap')) {
+                child.rotation.x = flapAngle;
+            }
+        });
     }
 };
 
-// Export the FighterJetModel object
+// Export the PlaneModel object
 if (typeof module !== 'undefined') {
-    module.exports = FighterJetModel;
+    module.exports = PlaneModel;
 }
